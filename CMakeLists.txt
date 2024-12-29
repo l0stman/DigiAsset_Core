@@ -3,6 +3,7 @@ project(digiasset_core)
 
 option(BUILD_CLI "Build CLI" ON)
 option(BUILD_WEB "Build Web Server" ON)
+option(BUILD_QT "Build QT" ON)
 option(BUILD_TEST "Build Tests" OFF)
 
 
@@ -13,8 +14,14 @@ SET(CMAKE_CXX_FLAGS "-std=c++11 -g -Wall")
 # Set version number
 SET(MAJOR_VERSION 0)
 SET(MINOR_VERSION 3)
-SET(PATCH_VERSION 1)
+SET(PATCH_VERSION 2)
 SET(SO_VERSION    0)
+
+# Set output directory for binaries and libraries
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)  # For executables
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)  # For shared libraries
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)  # For static libraries
+
 
 # Add source directory
 include_directories(src)
@@ -22,18 +29,28 @@ ADD_SUBDIRECTORY(src)
 
 #create cli
 if(BUILD_CLI)
+    message(STATUS "\nConfiguring CLI:")
     include_directories(cli)
     ADD_SUBDIRECTORY(cli)
 endif()
 
+#create qt
+if(BUILD_QT)
+    message(STATUS "\nConfiguring QT:")
+    include_directories(qt)
+    ADD_SUBDIRECTORY(qt)
+endif()
+
 #create web
 if(BUILD_WEB)
+    message(STATUS "\nConfiguring Web:")
     include_directories(web)
     ADD_SUBDIRECTORY(web)
 endif()
 
 #build test script
 if(BUILD_TEST)
+    message(STATUS "\nConfiguring Tests:")
     set(GOOGLETEST_VERSION 1.11.0)
     ADD_SUBDIRECTORY(tests)
 endif()

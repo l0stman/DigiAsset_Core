@@ -9,9 +9,17 @@
 #include "Version.h"
 #include "utils.h"
 #include <iostream>
+#include "InstanceLock.h"
 
 
 int main() {
+    //make sure only one instance
+    InstanceLock lock("digiasset_core");
+    if (!lock.acquire()) {
+        return 1;
+    }
+    std::cout << "Core application running. PID: " << getpid() << std::endl;
+
     ///When updating bootstrap image change both values.   Reviewers make sure this value is only ever changed by trusted party
     const vector<string> oldBootstrapCIDs = {"QmVYaAEq5Whh1951RtRrBx1aFXiLuPoho4apRRa9tX6BDM"};
     const string officialBootstrapCID = "QmaAHM9ZPGDWjW2Y5HhVzRVKAyrWofjzkN7pCW1juKgizU";

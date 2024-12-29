@@ -6,6 +6,7 @@
 #include "AppMain.h"
 #include "DigiAsset.h"
 #include "DigiAssetTypes.h"
+#include "DigiAssetConstants.h"
 #include "serialize.h"
 #include <algorithm>
 
@@ -159,7 +160,7 @@ void DigiAssetRules::decodeRoyaltyUnits(const getrawtransaction_t& txData, BitIO
     if (dataStream.getBits(1) == 1) {
 
         //standard currency
-        _exchangeRate = DigiAsset::standardExchangeRates[dataStream.getBits(7)];
+        _exchangeRate = DigiAssetConstants::standardExchangeRates[dataStream.getBits(7)];
 
     } else {
 
@@ -250,7 +251,7 @@ void DigiAssetRules::decodeVoteAndExpiry(const getrawtransaction_t& txData, BitI
         //default list(recommended as counts are tracked and garbage auto collected)
         for (unsigned char i = 0; i < voteLength; i++) {
             _voteOptions.emplace_back(VoteOption{
-                    .address = DigiAsset::standardVoteAddresses[i],
+                    .address = DigiAssetConstants::standardVoteAddresses[i],
                     .label = ""});
         }
 
@@ -734,7 +735,7 @@ std::vector<VoteOption> DigiAssetRules::getVoteOptions() {
         if (!votes.isArray()) throw exceptionVoteOptionsCorrupt();
         bool usingString = (votes.empty() ||
                             votes[0].isString()); //allowed either array of vote labels or array of strings
-        if ((usingString) && (votes.size() > DigiAsset::standardVoteCount)) {
+        if ((usingString) && (votes.size() > DigiAssetConstants::standardVoteCount)) {
             throw exceptionVoteOptionsCorrupt();
         }
 
@@ -747,7 +748,7 @@ std::vector<VoteOption> DigiAssetRules::getVoteOptions() {
                 //array of string processing
                 if (!vote.isString()) throw exceptionVoteOptionsCorrupt(); //invalid format
                 options.emplace_back(VoteOption{
-                        .address = DigiAsset::standardVoteAddresses[i],
+                        .address = DigiAssetConstants::standardVoteAddresses[i],
                         .label = vote.asString()});
 
             } else {

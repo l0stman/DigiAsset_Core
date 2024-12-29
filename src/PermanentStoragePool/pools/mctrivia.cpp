@@ -6,6 +6,7 @@
 #include "AppMain.h"
 #include "CurlHandler.h"
 #include "Log.h"
+#include "DigiAssetConstants.h"
 #include <algorithm>
 #include <atomic>
 #include <chrono>
@@ -80,7 +81,7 @@ uint64_t mctrivia::getCost(const DigiByteTransaction& tx) {
 
     //get current DGB cost
     Database* db = AppMain::GetInstance()->getDatabase();
-    double exchangeRate = db->getCurrentExchangeRate(DigiAsset::standardExchangeRates[1]); //USD
+    double exchangeRate = db->getCurrentExchangeRate(DigiAssetConstants::standardExchangeRates[1]); //USD
     return usdCost * exchangeRate;
 }
 
@@ -189,7 +190,7 @@ string mctrivia::serializeMetaProcessor(const DigiByteTransaction& tx) {
 
     //look up lowest accepted exchange rate
     Database* db = AppMain::GetInstance()->getDatabase();
-    double exchangeRate = db->getAcceptedExchangeRate(DigiAsset::standardExchangeRates[1], tx.getHeight());
+    double exchangeRate = db->getAcceptedExchangeRate(DigiAssetConstants::standardExchangeRates[1], tx.getHeight());
     uint64_t bytes = ceil(1000000 * dgb / (exchangeRate * 1.2)) + 1; //1.2 is price in US$ per MB, ceil and +1 just in case of rounding error
 
     //return "S_bytes"

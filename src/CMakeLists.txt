@@ -83,6 +83,7 @@ set(HEADER_FILES
         Base58.h
         serialize.h
         DigiAssetTypes.h
+        DigiAssetConstants.h
         DigiByteDomain.h
         Config.h
         RPC/Server.h
@@ -107,6 +108,7 @@ set(HEADER_FILES
         Database_LockedStatement.h
         crypto/ripemd.h
         crypto/SHA256.h
+        InstanceLock.h
         )
 
 set(SOURCE_FILES
@@ -144,6 +146,7 @@ set(SOURCE_FILES
         Database_LockedStatement.cpp
         crypto/ripemd.c
         crypto/SHA256.cpp
+        InstanceLock.cpp
         )
 
 add_executable(digiasset_core main.cpp ${SOURCE_FILES} ${HEADER_FILES} ${RPC_METHODS_FILES})

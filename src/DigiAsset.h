@@ -70,11 +70,6 @@ public:
     static const unsigned char HYBRID = 1;
     static const unsigned char DISPERSED = 2;
 
-    static const ExchangeRate standardExchangeRates[];
-    static const size_t standardExchangeRatesCount = 20;
-    static const std::string standardVoteAddresses[];
-    static const size_t standardVoteCount = 50;
-
     //constructors
     DigiAsset() = default;
     DigiAsset(const getrawtransaction_t& txData, unsigned int height, unsigned char version,

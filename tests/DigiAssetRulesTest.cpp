@@ -6,6 +6,7 @@
 #include "DigiByteCore.h"
 #include "DigiByteTransaction.h"
 #include "gtest/gtest.h"
+#include "DigiAssetConstants.h"
 #include <cmath>
 
 #include <algorithm>
@@ -105,7 +106,7 @@ TEST(DigiAssetRules, serialize) {
 
     //try requiring royalties(1 CAD)
     test = DigiAssetRules();
-    test.setRoyalties({{.address = "fake1", .amount = 100000000}}, DigiAsset::standardExchangeRates[0]);
+    test.setRoyalties({{.address = "fake1", .amount = 100000000}}, DigiAssetConstants::standardExchangeRates[0]);
     serialized = {};
     serialize(serialized, test);
     expected = {0x40, 0x42,
@@ -243,7 +244,7 @@ TEST(DigiAssetRules, deserialize) {
     i = 0;
     deserialize(serialized, i, test);
     expected = DigiAssetRules();
-    expected.setRoyalties({{.address = "fake1", .amount = 100000000}}, DigiAsset::standardExchangeRates[0]);
+    expected.setRoyalties({{.address = "fake1", .amount = 100000000}}, DigiAssetConstants::standardExchangeRates[0]);
     EXPECT_TRUE(test == expected);
 
     //try rewritable, royalties 5 DGB - same as c57fc42847ebf7b3842fde56ed3ef1897d330413d3325e6b2043b78b5ed7f3fa
