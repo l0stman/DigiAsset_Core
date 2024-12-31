@@ -169,6 +169,9 @@ void showLoadingScreen(QApplication &app) {
     progressBar->setValue(0);
     progressBar->setVisible(false);
 
+    timeLabel = new QLabel("Estimated time: Calculating...");
+    timeLabel->setAlignment(Qt::AlignCenter);
+
     loadingSpinner = new QLabel();
     QString spinnerPath = QCoreApplication::applicationDirPath() + "/images/spinner.gif";
     spinnerMovie = new QMovie(spinnerPath);
@@ -179,6 +182,7 @@ void showLoadingScreen(QApplication &app) {
 
     layout->addWidget(statusLabel);
     layout->addWidget(progressBar);
+    layout->addWidget(timeLabel);
     layout->addWidget(loadingSpinner);
 
     splash.show();
