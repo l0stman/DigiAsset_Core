@@ -26,9 +26,9 @@ QMovie *spinnerMovie = nullptr;
 QTabWidget *tabWidget = nullptr;
 RPCLoader loader;  // Create a single instance of Loader
 
-int previousSync = 0;
-double estimatedTime = 0;
-std::chrono::steady_clock::time_point lastUpdate;
+int previousRemaining = 0;
+double estimatedTime = -1;  //give impossible value as flag to show it is not set
+std::chrono::steady_clock::time_point lastUpdateTime;
 
 void startCoreProcess() {
     if (coreProcess && coreProcess->state() != QProcess::NotRunning) {
@@ -48,37 +48,47 @@ void startCoreProcess() {
 }
 
 QString estimateTimeRemaining(int sync, int count) {
+    if (sync>0) return "Calculating";  //not currently syncing so can't estimate
+
     using namespace std::chrono;
 
-    int remaining = count - sync;
-
+    //determine time taken between samples
     auto now = steady_clock::now();
-    double elapsed = duration_cast<seconds>(now - lastUpdate).count();
+    double elapsed = duration_cast<seconds>(now - lastUpdateTime).count();
 
-    int blocksSynced = sync - previousSync;
-    double syncSpeed = blocksSynced / elapsed;
+    //determine rate of catch up
+    int remaining = 0 - sync;   //sync is negative number for how many blocks behind it is.
+    int catchUpCount = previousRemaining-remaining; //get how much closer we are to being synced then before
+    double syncSpeed = catchUpCount / elapsed;
+    double currentEstimate = remaining / syncSpeed;
+
+    //update previous samples
+    previousRemaining = remaining;
+    lastUpdateTime = now;
 
     if (syncSpeed > 0) {
-        double currentEstimate = remaining / syncSpeed;
+        if (estimatedTime==-1) estimatedTime=currentEstimate;    //handle first sync time
         estimatedTime = (0.7 * estimatedTime) + (0.3 * currentEstimate);  // Smoothing factor
 
         int days = static_cast<int>(estimatedTime) / 86400;
         int hours = (static_cast<int>(estimatedTime) % 86400) / 3600;
         int minutes = (static_cast<int>(estimatedTime) % 3600) / 60;
-        int seconds = static_cast<int>(estimatedTime) % 60;
 
         if (days > 0) {
-            return QString("%1 days %2 hrs %3 min %4 sec remaining")
-                    .arg(days).arg(hours).arg(minutes).arg(seconds);
+            return QString("%1 days %2 hrs %3 min")
+                    .arg(days).arg(hours).arg(minutes);
         } else if (hours > 0) {
-            return QString("%1 hrs %2 min %3 sec remaining")
-                    .arg(hours).arg(minutes).arg(seconds);
+            return QString("%1 hrs %2 min")
+                    .arg(hours).arg(minutes);
+        } else if (estimatedTime >= 60) {
+            return QString("%1 min")
+                    .arg(minutes);
         } else {
-            return QString("%1 min %2 sec remaining")
-                    .arg(minutes).arg(seconds);
+            return QString("less than a minute");
         }
     } else {
-        return "Calculating time...";
+        //falling behind in sync.  Can happen if blocks are densely packed or machine is really slow.
+        return "Calculating";
     }
 }
 
@@ -129,12 +139,8 @@ void updateLoadingProgress(QTimer *timer, QWidget &splash) {
                 loadingSpinner->setVisible(false);
                 spinnerMovie->stop();
 
-                if (previousSync != sync) {
-                    QString timeEstimate = estimateTimeRemaining(sync, count);
-                    timeLabel->setText("Estimated time: " + timeEstimate);
-                    previousSync = sync;
-                    lastUpdate = std::chrono::steady_clock::now();
-                }
+                QString timeEstimate = estimateTimeRemaining(sync, count);
+                timeLabel->setText("Estimated time remaining: " + timeEstimate);
                 break;
         }
         statusLabel->setText(syncMessage);
@@ -169,7 +175,7 @@ void showLoadingScreen(QApplication &app) {
     progressBar->setValue(0);
     progressBar->setVisible(false);
 
-    timeLabel = new QLabel("Estimated time: Calculating...");
+    timeLabel = new QLabel("Estimated time remaining: Calculating");
     timeLabel->setAlignment(Qt::AlignCenter);
 
     loadingSpinner = new QLabel();
@@ -192,13 +198,14 @@ void showLoadingScreen(QApplication &app) {
         updateLoadingProgress(timer, splash);
     });
 
-    lastUpdate = std::chrono::steady_clock::now();
+    lastUpdateTime = std::chrono::steady_clock::now();
     timer->start(15000);
     app.exec();
 }
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+    QApplication::setWindowIcon(QIcon(QCoreApplication::applicationDirPath() + "/images/app_icon.png"));
 
     startCoreProcess();
     showLoadingScreen(app);

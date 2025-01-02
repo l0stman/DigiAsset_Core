@@ -52,6 +52,10 @@ add_executable(digiasset_core-qt
         ${HEADER_FILES}
         )
 
+# --- Add application icon AFTER target creation ---
+set(APP_ICON_RESOURCE ../bin/images/app_icon.rc)
+target_sources(digiasset_core-qt PRIVATE ${APP_ICON_RESOURCE})
+
 # --- Link system libraries (curl, ssl, crypto, pthread) ---
 target_link_libraries(digiasset_core-qt PRIVATE CURL::libcurl)
 target_link_libraries(digiasset_core-qt PRIVATE ssl)
@@ -85,6 +89,8 @@ target_link_libraries(digiasset_core-qt
 #         Qt6::Widgets
 #         Qt6::Charts
 # )
+
+
 
 # --- Installation rule ---
 install(TARGETS digiasset_core-qt DESTINATION bin)

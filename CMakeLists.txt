@@ -15,7 +15,7 @@ SET(CMAKE_CXX_FLAGS "-std=c++11 -g -Wall")
 SET(MAJOR_VERSION 0)
 SET(MINOR_VERSION 3)
 SET(PATCH_VERSION 2)
-SET(SO_VERSION    1)
+SET(SO_VERSION    2)
 
 # Set output directory for binaries and libraries
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)  # For executables
