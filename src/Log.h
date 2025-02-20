@@ -14,6 +14,9 @@
 
 using namespace std;
 
+#ifdef ERROR
+#undef ERROR
+#endif
 
 class Log {
 public:
