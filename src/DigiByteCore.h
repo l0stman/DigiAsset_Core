@@ -16,6 +16,22 @@
 #include <random>
 #include <string>
 
+#if defined(_WIN32)
+using uint = unsigned int;
+
+#if defined(GetMessage)
+#undef GetMessage
+#endif // GetMessage
+
+#if defined(max)
+#undef max
+#endif // max
+
+#if defined(min)
+#undef min
+#endif // min
+
+#endif // _WIN32
 
 namespace jsonrpc {
     class HttpClient;
