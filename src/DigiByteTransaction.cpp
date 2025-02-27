@@ -70,9 +70,9 @@ DigiByteTransaction::DigiByteTransaction(const string& txid, unsigned int height
                 if (vin.txid.empty()) break;
 
                 //find any assets on input utxos
-                AssetUTXO input{
-                        .txid = vin.txid,
-                        .vout = static_cast<uint16_t>(vin.n)};
+                AssetUTXO input;
+                input.txid = vin.txid;
+                input.vout = static_cast<uint16_t>(vin.n);
                 _inputs.push_back(input);
             }
             _txType = STANDARD;
@@ -96,11 +96,12 @@ DigiByteTransaction::DigiByteTransaction(const string& txid, unsigned int height
 
     //copy output data
     for (const vout_t& vout: txData.vout) {
-        _outputs.emplace_back(AssetUTXO{
-                .txid = txData.txid,
-                .vout = static_cast<uint16_t>(vout.n),
-                .address = (vout.scriptPubKey.addresses.empty()) ? "" : vout.scriptPubKey.addresses[0],
-                .digibyte = vout.valueS});
+        AssetUTXO output;
+        output.txid = txData.txid;
+        output.vout = static_cast<uint16_t>(vout.n);
+        output.address = (vout.scriptPubKey.addresses.empty()) ? "" : vout.scriptPubKey.addresses[0];
+        output.digibyte = vout.valueS;
+        _outputs.emplace_back(output);
     }
 
     //find index of op_return
@@ -246,7 +247,10 @@ bool DigiByteTransaction::decodeAssetTX(const getrawtransaction_t& txData, int d
 
             //create the asset
             _newAsset = DigiAsset{txData, _height, _assetTransactionVersion, opcode, dataStream};
-            decodeAssetTransfer(dataStream, vector<AssetUTXO>{{.digibyte = 0, .assets = vector<DigiAsset>{_newAsset}}}, DIGIASSET_ISSUANCE);
+            AssetUTXO input;
+            input.digibyte = 0;
+            input.assets = vector<DigiAsset>{_newAsset};
+            decodeAssetTransfer(dataStream, vector<AssetUTXO>{input}, DIGIASSET_ISSUANCE);
             _txType = DIGIASSET_ISSUANCE;
             return true;
         } catch (const DigiAsset::exception& e) {
@@ -544,10 +548,11 @@ ExchangeRate DigiByteTransaction::getExchangeRateName(uint8_t i) const {
             name = DigiAsset::standardExchangeRates[offset + i].name;
         }
     }
-    return {
-            .address = _outputs[1].address,
-            .index = i,
-            .name = name};
+    ExchangeRate result;
+    result.address = _outputs[1].address;
+    result.index = i;
+    result.name = name;
+    return result;
 }
 
 /**
