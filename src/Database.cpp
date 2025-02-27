@@ -1560,9 +1560,10 @@ std::vector<AssetHolder> Database::getAssetHolders(uint64_t assetIndex) {
     while (getAssetHolders.executeStep() == SQLITE_ROW) {
         string address = getAssetHolders.getColumnText(0);
         uint64_t count = getAssetHolders.getColumnInt64(1);
-        result.emplace_back(AssetHolder{
-                .address = address,
-                .count = count});
+        AssetHolder holder;
+        holder.address = address;
+        holder.count = count;
+        result.emplace_back(holder);
     }
     return result;
 }
@@ -1775,9 +1776,10 @@ std::vector<AssetCount> Database::getAddressHoldings(const string& address) {
     LockedStatement getAddressHoldings{_stmtGetAddressHoldings};
     getAddressHoldings.bindText(1, address);
     while (getAddressHoldings.executeStep() == SQLITE_ROW) {
-        results.emplace_back(AssetCount{
-                .assetIndex = static_cast<unsigned int>(getAddressHoldings.getColumnInt(0)),
-                .count = static_cast<uint64_t>(getAddressHoldings.getColumnInt64(1))});
+        AssetCount a;
+        a.assetIndex = static_cast<unsigned int>(getAddressHoldings.getColumnInt(0));
+        a.count = static_cast<uint64_t>(getAddressHoldings.getColumnInt64(1));
+        results.emplace_back(a);
     }
     return results;
 }
@@ -1848,11 +1850,12 @@ vector<Database::exchangeRateHistoryValue> Database::getExchangeRatesAtHeight(un
     LockedStatement exchangeRatesAyHeight{_stmtExchangeRatesAtHeight};
     exchangeRatesAyHeight.bindInt(1, height);
     while (exchangeRatesAyHeight.executeStep() == SQLITE_ROW) {
-        firstEntry.push_back(exchangeRateHistoryValue{
-                .height = (unsigned int) exchangeRatesAyHeight.getColumnInt(0),
-                .address = exchangeRatesAyHeight.getColumnText(1),
-                .index = (unsigned char) exchangeRatesAyHeight.getColumnInt(2),
-                .value = exchangeRatesAyHeight.getColumnDouble(3)});
+        exchangeRateHistoryValue val;
+        val.height = (unsigned int) exchangeRatesAyHeight.getColumnInt(0);
+        val.address = exchangeRatesAyHeight.getColumnText(1);
+        val.index = (unsigned char) exchangeRatesAyHeight.getColumnInt(2);
+        val.value = exchangeRatesAyHeight.getColumnDouble(3);
+        firstEntry.push_back(val);
     }
     return firstEntry;
 }
