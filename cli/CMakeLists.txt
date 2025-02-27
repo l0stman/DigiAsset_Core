@@ -27,10 +27,17 @@ add_executable(digiasset_core-cli main.cpp ${SOURCE_FILES} ${HEADER_FILES})
 
 
 target_link_libraries(digiasset_core-cli PRIVATE CURL::libcurl)
-target_link_libraries(digiasset_core-cli PRIVATE ssl)
-target_link_libraries(digiasset_core-cli PRIVATE pthread)
 
-target_link_libraries(digiasset_core-cli PRIVATE /lib/x86_64-linux-gnu/libjsoncpp.so)
+# Platform-specific libraries.
+if(WIN32)
+  find_package(jsoncpp REQUIRED)
+  target_link_libraries(digiasset_core-cli PRIVATE jsoncpp_static)
+else()
+  target_link_libraries(digiasset_core-cli PRIVATE ssl)
+  target_link_libraries(digiasset_core-cli PRIVATE pthread)
+  target_link_libraries(digiasset_core-cli PRIVATE /lib/x86_64-linux-gnu/libjsoncpp.so)
+endif()
+
 target_link_libraries(digiasset_core-cli PRIVATE jsonrpccpp-common)
 target_link_libraries(digiasset_core-cli PRIVATE jsonrpccpp-client)
 

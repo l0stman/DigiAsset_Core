@@ -148,17 +148,26 @@ set(SOURCE_FILES
 
 add_executable(digiasset_core main.cpp ${SOURCE_FILES} ${HEADER_FILES} ${RPC_METHODS_FILES})
 
-
 target_link_libraries(digiasset_core PRIVATE CURL::libcurl)
-target_link_libraries(digiasset_core PUBLIC sqlite3)
-target_link_libraries(digiasset_core PRIVATE ssl)
-target_link_libraries(digiasset_core PRIVATE crypto)
-target_link_libraries(digiasset_core PRIVATE pthread)
 
-target_link_libraries(digiasset_core PRIVATE /lib/x86_64-linux-gnu/libjsoncpp.so)
+# Platform-specific libraries.
+if(WIN32)
+  find_package(SQLite3 REQUIRED)
+  find_package(OpenSSL REQUIRED)
+  find_package(jsoncpp REQUIRED)
+  target_link_libraries(digiasset_core PRIVATE SQLite::SQLite3)
+  target_link_libraries(digiasset_core PRIVATE OpenSSL::Crypto)
+  target_link_libraries(digiasset_core PRIVATE jsoncpp_static)
+else()
+  target_link_libraries(digiasset_core PUBLIC sqlite3)
+  target_link_libraries(digiasset_core PRIVATE ssl)
+  target_link_libraries(digiasset_core PRIVATE crypto)
+  target_link_libraries(digiasset_core PRIVATE pthread)
+  target_link_libraries(digiasset_core PRIVATE /lib/x86_64-linux-gnu/libjsoncpp.so)
+endif()
+
 target_link_libraries(digiasset_core PRIVATE jsonrpccpp-common)
 target_link_libraries(digiasset_core PRIVATE jsonrpccpp-client)
-
 
 install(TARGETS digiasset_core DESTINATION bin)
 add_library(digiasset_core_lib STATIC ${SOURCE_FILES} ${HEADER_FILES} ${RPC_METHODS_FILES})
