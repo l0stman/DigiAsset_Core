@@ -217,7 +217,9 @@ string IPFS::_command(const string& command, const map<string, string>& data, un
         //replace CurlHandler error with IPFS error
         throw exceptionTimeout();
     } catch (const std::exception& e) {
-        if (string(e.what()) == "Couldn't connect to server") throw exceptionNoConnection();
+        if (string(e.what()) == "Couldn't connect to server" ||
+            string(e.what()) == "Could not connect to server")
+                throw exceptionNoConnection();
         throw;
     }
     return "";
