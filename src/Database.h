@@ -375,9 +375,10 @@ public:
         indexCommand << ");";
 
         // Store the index creation command for later use
-        _performanceIndexes.emplace_back(PerformanceIndex{
-                .name = indexName.str(),
-                .command = indexCommand.str()});
+        PerformanceIndex pi;
+        pi.name = indexName.str();
+        pi.command = indexCommand.str();
+        _performanceIndexes.emplace_back(pi);
     }
     void executePerformanceIndex(int& state);
 
