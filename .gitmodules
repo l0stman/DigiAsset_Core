@@ -7,3 +7,6 @@
 [submodule "jsoncpp"]
 	path = jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "libjson-rpc-cpp"]
+	path = libjson-rpc-cpp
+	url = https://github.com/cinemast/libjson-rpc-cpp.git
