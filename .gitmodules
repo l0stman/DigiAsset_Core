@@ -4,3 +4,6 @@
 [submodule "vcpkg"]
 	path = vcpkg
 	url = https://github.com/microsoft/vcpkg
+[submodule "jsoncpp"]
+	path = jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
