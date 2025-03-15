@@ -76,14 +76,14 @@ namespace RPC {
     ███████║███████╗   ██║   ╚██████╔╝██║
     ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
      */
-    Server::Server(const string& fileName) : _io(), _work(_io) {
+    Server::Server(const string& fileName) : _io() {
         Config config = Config(fileName);
         _username = config.getString("rpcuser");
         _password = config.getString("rpcpassword");
         _port = config.getInteger("rpcassetport", 14024);
 
         // Create work to keep io_ running
-        boost::asio::io_service::work work(_io);
+        auto work = boost::asio::make_work_guard(_io);
 
         // Create a pool of threads to run all of the io_services.
         size_t poolSize = config.getInteger("rpcparallel", 8);
@@ -137,7 +137,7 @@ namespace RPC {
                 _acceptor.accept(*socket);
 
                 log->addMessage("RPC call #" + std::to_string(callNumber) + " added to que", Log::DEBUG);
-                _io.post([this, socket, callNumber]() { this->handleConnection(socket, callNumber); });
+                boost::asio::post(_io, [this, socket, callNumber]() { this->handleConnection(socket, callNumber); });
             } catch (const std::exception& e) {
                 log->addMessage("Unexpected exception in RPC call #" + std::to_string(callNumber) + ": " + e.what(), Log::DEBUG);
             } catch (...) {

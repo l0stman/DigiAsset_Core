@@ -37,8 +37,7 @@ namespace RPC {
     class Server {
         std::atomic<uint64_t> _callCounter{0};
 
-        boost::asio::io_service _io{};
-        boost::asio::io_service::work _work;
+        boost::asio::io_context _io{};
         std::vector<std::thread> _thread_pool;
 
         tcp::acceptor _acceptor{_io};
