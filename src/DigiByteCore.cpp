@@ -1243,6 +1243,9 @@ getrawtransaction_t DigiByteCore::getrawtransaction(const string& txid, bool ver
                  it2 != val["scriptPubKey"]["addresses"].end(); it2++) {
                 output.scriptPubKey.addresses.push_back((*it2).asString());
             }
+            auto addr = val["scriptPubKey"]["address"];
+            if (addr)
+                output.scriptPubKey.addresses.push_back(addr.asString());
 
             ret.vout.push_back(output);
         }
