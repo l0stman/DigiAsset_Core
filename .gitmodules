@@ -10,3 +10,4 @@
 [submodule "libjson-rpc-cpp"]
 	path = libjson-rpc-cpp
 	url = https://github.com/l0stman/libjson-rpc-cpp.git
+        branch = master
