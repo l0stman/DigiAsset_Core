@@ -1,23 +1,96 @@
 ## Table of Contents
-1. [Install Ubuntu](#install-ubuntu)
-2. [Increase Swap Size](#increase-swap-size)
-3. [Install DigiByte](#install-digibyte)
-4. [Install Dependencies](#install-dependencies)
-5. [Install VCPKG](#install-vcpkg)
-6. [Install Standard C++ Dependencies](#install-standard-c-dependencies)
-7. [Update CMAKE](#update-cmake)
-8. [Install IPFS](#install-ipfs)
-9. [Set IPFS to Run on Boot](#set-ipfs-to-run-on-boot)
-10. [Build DigiAsset Core](#build-digiasset-core)
-11. [Configure DigiAsset Core](#configure-digiasset-core)
-12. [Set DigiAsset Core to Run at Boot](#set-digiasset-core-to-run-at-boot)
-13. [Upgrading DigiAsset Core](#upgrading-digiasset-core)
-14. [Documentation](#Documentation)
-15. [Other Notes](#other-notes)
-16. [Special Thanks](#special-thanks)
+1. [Build on Windows](#build-on-windows)
+2. [Install Ubuntu](#install-ubuntu)
+3. [Increase Swap Size](#increase-swap-size)
+4. [Install DigiByte](#install-digibyte)
+5. [Install Dependencies](#install-dependencies)
+6. [Install VCPKG](#install-vcpkg)
+7. [Install Standard C++ Dependencies](#install-standard-c-dependencies)
+8. [Update CMAKE](#update-cmake)
+9. [Install IPFS](#install-ipfs)
+10. [Set IPFS to Run on Boot](#set-ipfs-to-run-on-boot)
+11. [Build DigiAsset Core](#build-digiasset-core)
+12. [Configure DigiAsset Core](#configure-digiasset-core)
+13. [Set DigiAsset Core to Run at Boot](#set-digiasset-core-to-run-at-boot)
+14. [Upgrading DigiAsset Core](#upgrading-digiasset-core)
+15. [Documentation](#Documentation)
+16. [Other Notes](#other-notes)
+17. [Special Thanks](#special-thanks)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+## Build on Windows
+
+This fork builds a Windows version with Visual Studio and MSVC in the main branch, with upstream tracking in the 'upstream-master' branch.
+
+### Prerequisites
+
+This project uses CMake for the build system. Since we're focusing on Visual Studio:
+
+1. Install CMake support through the Visual Studio Installer (select "Desktop development with C++" and ensure "C++ CMake tools for Windows" is checked)
+2. Once installed, open a command prompt with "Tools > Command Line > Developer Command Prompt"
+3. You can run `cmake` commands from within this Developer Command Prompt
+
+### Clone the Repository
+
+If you just want to build binaries:
+
+```cmd
+git clone --depth=1 --recurse-submodules --shallow-submodules https://github.com/l0stman/DigiAsset_Core.git
+```
+
+Or if you want to work on the code (see CONTRIBUTING.md for more details):
+
+```cmd
+git clone --no-single-branch --recurse-submodules https://github.com/l0stman/DigiAsset_Core.git
+```
+
+### Set Up VCPKG
+
+Run the following command in cmd.exe:
+
+```cmd
+cd vcpkg
+.\bootstrap-vcpkg.bat
+```
+
+### Install Dependencies
+
+At the top-level directory, execute:
+
+```cmd
+.\install-dependencies.bat
+```
+
+### Build JsonCpp Library
+
+Execute:
+
+```cmd
+.\config-jsoncpp.bat
+```
+
+Now open the jsoncpp.sln file inside the `jsoncpp\build` directory with Visual Studio. Before building, select either "Debug" or "Release" configuration from the dropdown in the toolbar, depending on whether you want a debug or release build. From "Solution Explorer", right click on `ALL_BUILD` and select "Build". Do the same thing for `INSTALL` in order to install the library.
+
+### Build LibJson-RPC Library
+
+Execute:
+
+```cmd
+.\config-libjson-rpc.bat
+```
+
+Like with JsonCpp, open the libjson-rpc-cpp.sln file inside the `libjson-rpc-cpp\build` directory. Select the same build configuration ("Debug" or "Release") that you chose in the previous step. Build the `ALL_BUILD` and `INSTALL` options in "Solution Explorer".
+
+### Build DigiAsset Core
+
+Execute:
+
+```cmd
+.\config.bat
+```
+
+Then open the solution file in Visual Studio, select the same build configuration ("Debug" or "Release") as in the previous steps, and run "Build" on `ALL_BUILD`. The `digiasset_core.exe` binary can be found inside the `DigiAsset_Core\build\src\Debug` or `DigiAsset_Core\build\src\Release` directory, depending on your chosen configuration. It should be launched from there since there are some DLL dependencies in that location.
 
 ## Install Ubuntu
 
