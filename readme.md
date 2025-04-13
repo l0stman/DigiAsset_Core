@@ -54,6 +54,15 @@ cd vcpkg
 .\bootstrap-vcpkg.bat
 ```
 
+### Choose Build Configuration
+
+Before proceeding with the library builds, you must decide whether you want to create a "Debug" or a "Release" build.
+
+*   **Debug:** Includes debugging information, useful for development and troubleshooting. Binaries are typically larger and may run slower.
+*   **Release:** Optimized for performance and size, suitable for deployment.
+
+**Crucially, you must select *one* configuration (either "Debug" or "Release") in Visual Studio for the first library (JsonCpp) and use that *exact same* configuration for all subsequent library builds (LibJson-RPC and DigiAsset Core). Mixing configurations will lead to build failures.**
+
 ### Install Dependencies
 
 At the top-level directory, execute:
@@ -62,7 +71,9 @@ At the top-level directory, execute:
 .\install-dependencies.bat
 ```
 
-### Build JsonCpp Library
+### Build The Binaries 
+
+#### Build JsonCpp Library
 
 Execute:
 
@@ -70,9 +81,9 @@ Execute:
 .\config-jsoncpp.bat
 ```
 
-Now open the jsoncpp.sln file inside the `jsoncpp\build` directory with Visual Studio. Before building, select either "Debug" or "Release" configuration from the dropdown in the toolbar, depending on whether you want a debug or release build. From "Solution Explorer", right click on `ALL_BUILD` and select "Build". Do the same thing for `INSTALL` in order to install the library.
+Now open the jsoncpp.sln file inside the `jsoncpp\build` directory with Visual Studio. Select your chosen build configuration ("Debug" or "Release") from the dropdown in the toolbar. From "Solution Explorer", right click on `ALL_BUILD` and select "Build". Do the same thing for `INSTALL` in order to install the library.
 
-### Build LibJson-RPC Library
+#### Build LibJson-RPC Library
 
 Execute:
 
@@ -80,9 +91,9 @@ Execute:
 .\config-libjson-rpc.bat
 ```
 
-Like with JsonCpp, open the libjson-rpc-cpp.sln file inside the `libjson-rpc-cpp\build` directory. Select the same build configuration ("Debug" or "Release") that you chose in the previous step. Build the `ALL_BUILD` and `INSTALL` options in "Solution Explorer".
+Like with JsonCpp, open the libjson-rpc-cpp.sln file inside the `libjson-rpc-cpp\build` directory. Ensure the **same** build configuration ("Debug" or "Release") you chose previously is selected. Build the `ALL_BUILD` and `INSTALL` options in "Solution Explorer".
 
-### Build DigiAsset Core
+#### Build DigiAsset Core
 
 Execute:
 
@@ -90,7 +101,7 @@ Execute:
 .\config.bat
 ```
 
-Then open the solution file in Visual Studio, select the same build configuration ("Debug" or "Release") as in the previous steps, and run "Build" on `ALL_BUILD`. The `digiasset_core.exe` binary can be found inside the `DigiAsset_Core\build\src\Debug` or `DigiAsset_Core\build\src\Release` directory, depending on your chosen configuration. It should be launched from there since there are some DLL dependencies in that location.
+Then open the solution file in Visual Studio, select the **same** build configuration ("Debug" or "Release") as in the previous steps, and run "Build" on `ALL_BUILD`. The `digiasset_core.exe` binary can be found inside the `DigiAsset_Core\build\src\Debug` or `DigiAsset_Core\build\src\Release` directory, depending on your chosen configuration. It should be launched from there since there are some DLL dependencies in that location.
 
 ## Install Ubuntu
 
