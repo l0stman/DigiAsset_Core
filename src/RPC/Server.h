@@ -38,6 +38,7 @@ namespace RPC {
         std::atomic<uint64_t> _callCounter{0};
 
         boost::asio::io_context _io{};
+        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> _work;
         std::vector<std::thread> _thread_pool;
 
         tcp::acceptor _acceptor{_io};

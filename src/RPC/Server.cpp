@@ -76,7 +76,7 @@ namespace RPC {
     ███████║███████╗   ██║   ╚██████╔╝██║
     ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝
      */
-    Server::Server(const string& fileName) : _io() {
+    Server::Server(const string& fileName) : _io(), _work(boost::asio::make_work_guard(_io)) {
         Config config = Config(fileName);
         _username = config.getString("rpcuser");
         _password = config.getString("rpcpassword");
